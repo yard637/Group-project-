@@ -1,0 +1,141 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class InventoryManagement {
+
+    // List to store inventory items
+    static ArrayList<Item> inventory = new ArrayList<>();
+    // Scanner for user input
+    static Scanner scanner = new Scanner(System.in);
+
+    // Class representing an item in the inventory
+    static class Item {
+        String name;  // Item name
+        double price; // Item price
+        int quantity; // Item stock quantity
+
+        // Constructor to initialize item details
+        Item(String name, double price, int quantity) {
+            this.name = name;
+            this.price = price;
+            this.quantity = quantity;
+        }
+    }
+
+    // Method to add a new item to the inventory
+    public static void addItem() {
+        System.out.println("\n=== Add a New Item ===");
+        System.out.print("Enter Item Name: ");
+        String name = scanner.nextLine(); // Get item name from user
+        System.out.print("Enter Item Price: ");
+        double price = Double.parseDouble(scanner.nextLine()); // Get item price from user
+        System.out.print("Enter Initial Stock: ");
+        int quantity = Integer.parseInt(scanner.nextLine()); // Get initial stock from user
+        inventory.add(new Item(name, price, quantity)); // Add the item to the inventory
+        System.out.println("Item '" + name + "' added successfully!\n");
+    }
+
+    // Method to update stock for an existing item
+    public static void updateStock() {
+        System.out.println("\n=== Update Stock ===");
+        System.out.print("Enter Item Name to Update: ");
+        String name = scanner.nextLine(); // Get item name to update
+        for (Item item : inventory) { // Iterate through the inventory to find the item
+            if (item.name.equalsIgnoreCase(name)) { // Check if item name matches (case-insensitive)
+                System.out.print("Enter quantity to add/remove (use negative numbers to reduce stock): ");
+                int change = Integer.parseInt(scanner.nextLine()); // Get quantity change from user
+                item.quantity += change; // Update stock quantity
+                System.out.println("Stock updated! New quantity of '" + item.name + "': " + item.quantity + "\n");
+                return; // Exit the method after updating
+            }
+        }
+        System.out.println("Item not found.\n"); // Notify if the item does not exist
+    }
+
+    // Method to display all items in the inventory
+    public static void viewInventory() {
+        System.out.println("\n=== View Inventory ===");
+        if (!inventory.isEmpty()) { // Check if the inventory is not empty
+            for (Item item : inventory) { // Iterate through the inventory
+                // Print item details
+                System.out.printf("- %s | Price: $%.2f | Stock: %d%n", item.name, item.price, item.quantity);
+            }
+            System.out.println();
+        } else {
+            System.out.println("No items in inventory.\n"); // Notify if inventory is empty
+        }
+    }
+
+    // Method to remove an item from the inventory
+    public static void removeItem() {
+        System.out.println("\n=== Remove an Item ===");
+        System.out.print("Enter Item Name to Remove: ");
+        String name = scanner.nextLine(); // Get item name to remove
+        for (Item item : inventory) { // Iterate through the inventory
+            if (item.name.equalsIgnoreCase(name)) { // Check if item name matches (case-insensitive)
+                inventory.remove(item); // Remove the item
+                System.out.println("Item '" + name + "' removed successfully!\n");
+                return; // Exit the method after removing
+            }
+        }
+        System.out.println("Item not found.\n"); // Notify if the item does not exist
+    }
+
+    // Method to check and display items with stock below a threshold
+    public static void lowStockAlert() {
+        System.out.println("\n=== Low Stock Alert ===");
+        System.out.print("Enter stock threshold: ");
+        int threshold = Integer.parseInt(scanner.nextLine()); // Get stock threshold from user
+        boolean hasLowStock = false; // Flag to track if any item is below the threshold
+        System.out.println("Items with low stock:");
+        for (Item item : inventory) { // Iterate through the inventory
+            if (item.quantity < threshold) { // Check if stock is below the threshold
+                // Print item details
+                System.out.printf("- %s | Stock: %d%n", item.name, item.quantity);
+                hasLowStock = true; // Set flag to true if low stock is found
+            }
+        }
+        if (!hasLowStock) { // If no items are below the threshold
+            System.out.println("No items below the specified threshold.\n");
+        }
+    }
+
+    // Main method: displays menu and handles user choices
+    public static void main(String[] args) {
+        while (true) { // Infinite loop for menu navigation
+            System.out.println("=== Inventory Management System ===");
+            System.out.println("1. Add a New Item");
+            System.out.println("2. Update Stock");
+            System.out.println("3. View Inventory");
+            System.out.println("4. Remove an Item");
+            System.out.println("5. Low Stock Alert");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+            String choice = scanner.nextLine(); // Get user's menu choice
+
+            // Switch case to handle menu choices
+            switch (choice) {
+                case "1":
+                    addItem(); // Add new item
+                    break;
+                case "2":
+                    updateStock(); // Update stock
+                    break;
+                case "3":
+                    viewInventory(); // View inventory
+                    break;
+                case "4":
+                    removeItem(); // Remove item
+                    break;
+                case "5":
+                    lowStockAlert(); // Check for low stock
+                    break;
+                case "6":
+                    System.out.println("Exiting Inventory Management System. Goodbye!");
+                    return; // Exit the program
+                default:
+                    System.out.println("Invalid choice. Please try again.\n"); // Handle invalid input
+            }
+        }
+    }
+}
